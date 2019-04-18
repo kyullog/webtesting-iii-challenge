@@ -30,13 +30,33 @@ describe("The Controls Component", () => {
       const { getByText } = render(<Controls />);
       getByText(/lock gate/i);
     });
-    it('displays close button when open', () => {
+    it("displays close button when open", () => {
       const { getByText } = render(<Controls />);
       getByText(/close gate/i);
-    })
-    it('displays open button when closed', () => {
+    });
+    it("displays open button when closed", () => {
       const { getByText } = render(<Controls closed />);
       getByText(/open gate/i);
+    });
+  });
+  describe("buttons disable depending on locked and closed status", () => {
+    it("closed toggle button is disabled if gate is locked and closed", () => {
+      const disabledToggle = jest.fn();
+      const { getByText } = render(
+        <Controls locked closed toggleClosed={disabledToggle} />
+      );
+      const button = getByText(/open gate/i);
+      fireEvent.click(button);
+      expect(disabledToggle).toHaveBeenCalledTimes(0);
+      cleanup();
+    });
+    it('locked toggle button is disabled when door is open', () => {
+      const disabledToggle = jest.fn();
+      const { getByText } = render(<Controls />)
+      const button = getByText(/lock gate/i);
+      fireEvent.click(button);
+      expect(disabledToggle).toHaveBeenCalledTimes(0);
+      cleanup();
     })
   });
 });
